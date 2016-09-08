@@ -11,6 +11,6 @@ class SemanticsReader:
                 for value in line:
                     data.append(value)
 
-            return data
+            return data[0:-1]
 
 
