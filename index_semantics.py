@@ -24,9 +24,9 @@ output = open(args['index_semantics'], "w")
 # use glob to grab the image paths and loop over them
 for textFile in glob.glob(args["semantics"] + "/*.txt"):
         if '/' in textFile:
-                imageID = "dataset/" + textFile[textFile.rfind("/") + 1:].split(".")[0]+".jpg"
+                imageID = "dataset/dataset/" + textFile[textFile.rfind("/") + 1:].split(".")[0]+".jpg"
         else:
-                imageID = "dataset\\" + textFile[textFile.rfind("\\") + 1:].split(".")[0]+".jpg"
+                imageID = "dataset\\dataset\\" + textFile[textFile.rfind("\\") + 1:].split(".")[0]+".jpg"
         # extract semantics values from text file
         features = sr.read(textFile)
 

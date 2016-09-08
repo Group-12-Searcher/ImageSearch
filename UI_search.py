@@ -67,7 +67,7 @@ class UI_class:
             # load the result image and display it
             image_count += 1
             r, c = divmod(image_count - 1, COLUMNS)
-            im = Image.open( self.search_path + "/" + resultID)
+            im = Image.open(resultID)
             resized = im.resize((100, 100), Image.ANTIALIAS)
             tkimage = ImageTk.PhotoImage(resized)
             myvar = Label(self.result_img_frame, image=tkimage)
