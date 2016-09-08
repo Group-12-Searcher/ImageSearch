@@ -48,12 +48,12 @@ class Searcher:
 				# parse out the image ID and features, then compute the
 				# chi-squared distance between the features in our index
 				# and our query features
-				#features = [float(x) for x in row[1:]]
-                                features = []
+				features = [float(x) for x in row[1:]]
+                                '''features = []
                                 for x in row[1:]:
                                         print(x)
                                         print("---")
-                                        features.append(float(x))
+                                        features.append(float(x))'''
 
                                                         
 				d = self.chi2_distance(features, querySemantics)
