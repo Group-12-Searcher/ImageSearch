@@ -3,16 +3,19 @@ import numpy as np
 import csv
 import cv2
 
-class Searcher:
-	def __init__(self, indexPath):
+class Searcher:        
+	def __init__(self, indexPath, semanticsPath):
 		# store our index path
 		self.indexPath = indexPath
+		self.semanticsPath = semanticsPath
+                self.WEIGHT_CH = 0.5
+                self.WEIGHT_SEM = 0.5
 
-	def search(self, queryFeatures, limit = 10):
+	def search(self, queryFeatures, querySemantics, limit = 10):
 		# initialize our dictionary of results
 		results = {}
 
-		# open the index file for reading
+		# open the color histogram index file for reading
 		with open(self.indexPath) as f:
 			# initialize the CSV reader
 			reader = csv.reader(f)
@@ -30,7 +33,37 @@ class Searcher:
 				# key is the current image ID in the index and the
 				# value is the distance we just computed, representing
 				# how 'similar' the image in the index is to our query
-				results[row[0]] = d
+				results[row[0]] = d * self.WEIGHT_CH
+
+			# close the reader
+			f.close()
+
+		# open the semantics index file for reading
+		with open(self.semanticsPath) as f:
+			# initialize the CSV reader
+			reader = csv.reader(f)
+
+			# loop over the rows in the index
+			for row in reader:
+				# parse out the image ID and features, then compute the
+				# chi-squared distance between the features in our index
+				# and our query features
+				#features = [float(x) for x in row[1:]]
+                                features = []
+                                for x in row[1:]:
+                                        print(x)
+                                        print("---")
+                                        features.append(float(x))
+
+                                                        
+				d = self.chi2_distance(features, querySemantics)
+
+				# now that we have the distance between the two feature
+				# vectors, we can udpate the results dictionary -- the
+				# key is the current image ID in the index and the
+				# value is the distance we just computed, representing
+				# how 'similar' the image in the index is to our query
+				results[row[0]] += d * self.WEIGHT_SEM
 
 			# close the reader
 			f.close()
