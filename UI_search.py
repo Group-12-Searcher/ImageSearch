@@ -13,6 +13,12 @@ class UI_class:
         self.master = master
         topframe = Frame(self.master)
         topframe.pack()
+        # these variables are declared for implementing the flushing of old (query + results)
+        self.isUploadingImage = False
+        self.result_img_frame = Frame(self.master)
+        self.result_img_frame.pack()
+        self.query_img_frame = Frame(self.master)
+        self.query_img_frame.pack()
 
         #Buttons
         topspace = Label(topframe).grid(row=0, columnspan=2)
@@ -26,7 +32,11 @@ class UI_class:
 
 
     def browse_query_img(self):
-
+        # user wants to enter a query; flush old (query + results)
+        self.isUploadingImage = True
+        self.query_img_frame.destroy()
+        self.result_img_frame.pack_forget()
+        # add new frame for showing new query image
         self.query_img_frame = Frame(self.master)
         self.query_img_frame.pack()
         from tkFileDialog import askopenfilename
@@ -53,7 +63,9 @@ class UI_class:
 
 
     def show_results_imgs(self):
-        self.result_img_frame = Frame(self.master)
+        # user now wants to commence the search; load frame for displaying results of query
+        self.isUploadingImage = False;
+        # self.result_img_frame = Frame(self.master)
         self.result_img_frame.pack()
 
         # perform the search
@@ -78,5 +90,4 @@ class UI_class:
 
 
 root = Tk()
-print(root)
 window = UI_class(root,'dataset')
