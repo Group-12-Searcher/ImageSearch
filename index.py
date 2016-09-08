@@ -9,7 +9,7 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataset", required = False, default='dataset',
+ap.add_argument("-d", "--dataset", required = False, default='dataset\\dataset',
 	help = "Path to the directory that contains the images to be indexed")
 ap.add_argument("-i", "--index", required = False, default='index.csv',
 	help = "Path to where the computed index will be stored")
