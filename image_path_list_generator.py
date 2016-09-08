@@ -9,7 +9,8 @@ for imagePath in glob.glob("dataset\dataset\*.jpg"):
 	print imagePath
 	
 	# write the image path-name to file
-	image_list.write("%s\n" % imagePath)
+	tempstr = "..\\..\\ImageSeach_demo\\" + "%s\n" % imagePath
+	image_list.write(tempstr.replace("\\","\\\\"))
 
 # close the index file
 image_list.close()
