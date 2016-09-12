@@ -1,4 +1,5 @@
 *.csv
 *.pyc
 /pyimagesearch/*.pyc
-/semantics/model_imagenet
+/semantics/model_imagenet.mat
+/semantics/temp.txt
