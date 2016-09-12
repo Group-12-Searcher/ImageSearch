@@ -1,0 +1,10 @@
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0563_7465300.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0592_399467281.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0594_572992.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0274_2166843026.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0288_364812236.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0344_427880912.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0360_353859418.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0382_392407977.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0471_100977055.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\snow\0543_386398215.jpg

@@ -1,0 +1,4 @@
+G:\other\amit\test\data\coral.jpg
+G:\other\amit\test\data\plane.jpg
+G:\other\amit\test\data\zebra.jpg
+G:\other\amit\test\data\bear.jpg
