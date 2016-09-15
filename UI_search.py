@@ -54,14 +54,15 @@ class UI_class:
 
         # process query image to semantics vector
         # generate temp.txt for exe to run on it.
-        tempfile = open("semantics\\temp.txt", "w")
+        tempfile = open("semanticFeature\\temp.txt", "w")
         tempfile.write(self.filename)
         tempfile.close()
         # generate the txt file with 1000D for query
         FNULL = open(os.devnull, 'w') #suppress output to stdout
-        os.chdir("semantics")
+        os.chdir("semanticFeature")
         args = "./image_classification.exe temp.txt"
-        subprocess.call(args, stdout=FNULL, stderr=FNULL)
+        #subprocess.call(args, stdout=FNULL, stderr=FNULL)
+        subprocess.call(args)
         os.chdir("../")
         # read 1000D vector for semantics
         reqfile = self.filename
@@ -89,7 +90,7 @@ class UI_class:
         results = searcher.search(self.queryfeatures, self.querysemantics)
 
         # show result pictures
-        COLUMNS = 5
+        COLUMNS = 10
         image_count = 0
         for (score, resultID) in results:
             # load the result image and display it

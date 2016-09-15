@@ -1,0 +1,10 @@
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0074_2369885678.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0079_2041541286.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0212_2322966658.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0218_1255542538.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0315_455800614.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0330_2526534076.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0374_54427461.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0387_422533915.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0579_114604601.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\zebra\0591_473919117.jpg

@@ -8,10 +8,10 @@ class Searcher:
 		# store our index path
 		self.indexPath = indexPath
 		self.semanticsPath = semanticsPath
-                self.WEIGHT_CH = 0.5
-                self.WEIGHT_SEM = 0.5
+                self.WEIGHT_CH = 0.3333
+                self.WEIGHT_SEM = 0.6666
 
-	def search(self, queryFeatures, querySemantics, limit = 10):
+	def search(self, queryFeatures, querySemantics, limit = 40):
 		# initialize our dictionary of results
 		results = {}
 
@@ -49,11 +49,13 @@ class Searcher:
 				# chi-squared distance between the features in our index
 				# and our query features
 				features = [float(x) for x in row[1:]]
-                                '''features = []
+				'''
+                                features = []
                                 for x in row[1:]:
                                         print(x)
                                         print("---")
-                                        features.append(float(x))'''
+                                        features.append(float(x))
+                                '''
 
                                                         
 				d = self.chi2_distance(features, querySemantics)

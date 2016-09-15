@@ -9,7 +9,7 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--semantics", required = False, default='semantics',
+ap.add_argument("-d", "--semantics", required = False, default='semanticResults',
 	help = "Path to the directory that contains the images to be indexed")
 ap.add_argument("-i", "--index_semantics", required = False, default='index_semantics.csv',
 	help = "Path to where the computed index will be stored")

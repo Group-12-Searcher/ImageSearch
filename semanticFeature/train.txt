@@ -1,0 +1,10 @@
+D:\assignment_1\Assignment1\ImageData\test\data\train\0504_371012673.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0228_429130543.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0253_421644823.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0271_189112619.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0301_721827372.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0397_2408376500.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0398_211497434.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0403_2526678151.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0474_2300183335.jpg
+D:\assignment_1\Assignment1\ImageData\test\data\train\0488_2263845662.jpg
