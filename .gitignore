@@ -3,3 +3,4 @@
 /pyimagesearch/*.pyc
 /semanticFeature/model_imagenet.mat
 /semanticFeature/temp.txt
+/sift/*.pyc
