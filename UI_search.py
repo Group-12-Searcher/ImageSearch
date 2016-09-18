@@ -2,6 +2,7 @@
 from pyimagesearch.colordescriptor import ColorDescriptor
 from pyimagesearch.semanticsreader import SemanticsReader
 from pyimagesearch.searcher import Searcher
+from sift.pgmconverter import convertQueryToGray
 import cv2
 from Tkinter import *
 import tkFileDialog
@@ -69,6 +70,12 @@ class UI_class:
         base, ext = os.path.splitext(reqfile)
         self.querysemantics = sr.read(base + ".txt")
 
+        # convert query image to grayscale
+        convertQueryToGray(self.filename)
+        # generate key file for query
+        with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
+            subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
+        
         # show query image
         image_file = Image.open(self.filename)
         resized = image_file.resize((100, 100), Image.ANTIALIAS)
@@ -90,7 +97,7 @@ class UI_class:
         results = searcher.search(self.queryfeatures, self.querysemantics)
 
         # show result pictures
-        COLUMNS = 10
+        COLUMNS = 8
         image_count = 0
         for (score, resultID) in results:
             # load the result image and display it
@@ -104,7 +111,6 @@ class UI_class:
             myvar.grid(row=r, column=c)
 
         self.result_img_frame.mainloop()
-
 
 root = Tk()
 window = UI_class(root,'dataset')
