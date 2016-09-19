@@ -9,6 +9,7 @@ import tkFileDialog
 from PIL import Image, ImageTk
 import os
 import subprocess
+import csv
 
 class UI_class:
     def __init__(self, master, search_path):
@@ -75,6 +76,17 @@ class UI_class:
         # generate key file for query
         with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
             subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
+
+        # convert query image to list of texts (if any)
+        reader = csv.reader(open("dataset\\dataset\\combined_text_tags.txt"), delimiter=" ")
+        # find the line belonging to query image, req_line = None if no tags found
+        img_name = self.filename.split("/")[-1]
+        req_line = None
+        for line in reader:
+            if (line[0] == img_name):
+                req_line = line[6:]
+                break
+        self.querytext = req_line
         
         # show query image
         image_file = Image.open(self.filename)
@@ -93,8 +105,8 @@ class UI_class:
         self.result_img_frame.pack()
 
         # perform the search
-        searcher = Searcher("index.csv", "index_semantics.csv")
-        results = searcher.search(self.queryfeatures, self.querysemantics)
+        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv")
+        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext)
 
         # show result pictures
         COLUMNS = 8

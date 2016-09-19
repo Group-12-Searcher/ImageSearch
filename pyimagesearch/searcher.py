@@ -9,13 +9,15 @@ import threading
 from mysift import myMatch, myMatch2
 
 class Searcher:        
-	def __init__(self, indexPath, semanticsPath):
+	def __init__(self, indexPath, semanticsPath, textPath):
 		# store our index path
 		self.indexPath = indexPath
 		self.semanticsPath = semanticsPath
-                self.WEIGHT_CH = 0.25
+		self.textPath = textPath
+                self.WEIGHT_CH = 0.2
                 self.WEIGHT_SEM = 0.5
-                self.WEIGHT_SIFT = 0.25
+                self.WEIGHT_SIFT = 0.2
+                self.WEIGHT_TEXT = 0.1
                 self.results = {}
 
         class myThread(threading.Thread):
@@ -35,13 +37,13 @@ class Searcher:
 
                 p = subprocess.Popen(args, stdout=FNULL, stderr=subprocess.PIPE)
                 line = p.stderr.readline()
-                print(line[0:-2]+" with "+self.dbImage)
+                #print(line[0:-2]+" with "+self.dbImage)
 
                 numMatches = line.split(' ')[1]
                 d = float(numMatches)
                 self.searcher.results["dataset\\dataset\\"+self.dbImage+".jpg"] -= d * self.searcher.WEIGHT_SIFT                
 
-	def search(self, queryFeatures, querySemantics, limit = 32):
+	def search(self, queryFeatures, querySemantics, queryText, limit = 32):
 		# open the color histogram index file for reading
 		with open(self.indexPath) as f:
 			# initialize the CSV reader
@@ -121,6 +123,28 @@ class Searcher:
                 '''
                 
                 os.chdir("..")
+
+                # open the text index file for reading
+		with open(self.textPath) as f:
+			# initialize the CSV reader
+			reader = csv.reader(f)
+                        # Loop over all the tagged words for query image
+                        if (queryText != None):
+                                for word in queryText:
+                                        print("word is : " + word)
+                                        # loop over the rows in the index
+                                        for row in reader:
+                                                if (row[0] == word):
+                                                        # loop over all matching images
+                                                        for match_img in row[1:]:
+                                                                req_name = "dataset\\dataset\\" + match_img
+                                                                print (req_name)
+                                                                if (self.results.get(req_name) != None):
+                                                                        self.results[req_name] -= self.WEIGHT_TEXT
+                                                        break # go to next word
+                                        
+                        # close the reader
+                        f.close()
 
 		# sort our results, so that the smaller distances (i.e. the
 		# more relevant images are at the front of the list)
