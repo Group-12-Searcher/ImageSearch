@@ -4,3 +4,5 @@
 /semanticFeature/model_imagenet.mat
 /semanticFeature/temp.txt
 /sift/*.pyc
+*/imagenet_class_index.json
+*/inception_v3_weights_th_dim_ordering_th_kernels.h5
