@@ -101,7 +101,7 @@ class Searcher:
 
 
                 # Do sift matching
-                os.chdir("sift")
+                '''os.chdir("sift")
                 threads = []
                 for f in glob.glob("*.key"):
                         dbImage = f.split('/')[-1].split('.')[0]
@@ -109,18 +109,20 @@ class Searcher:
                         t.start()
                         threads.append(t)
                 for t in threads:
-                        t.join()
+                        t.join()'''
                         
                 ### My own experimental sift ###
-                '''
+ 
                 os.chdir("sift")
-                for f in glob.glob("*.key"):
+                for f in glob.glob("*.pgm"):
                         dbImage = f.split('/')[-1].split('.')[0]
                         im1 = "temp/query.pgm"
                         im2 = dbImage+".pgm"
+
                         d = myMatch(im1, im2)
                         self.results["dataset\\dataset\\"+dbImage+".jpg"] -= d * self.WEIGHT_SIFT
-                '''
+                        
+                
                 
                 os.chdir("..")
 
@@ -131,14 +133,12 @@ class Searcher:
                         # Loop over all the tagged words for query image
                         if (queryText != None):
                                 for word in queryText:
-                                        print("word is : " + word)
                                         # loop over the rows in the index
                                         for row in reader:
                                                 if (row[0] == word):
                                                         # loop over all matching images
                                                         for match_img in row[1:]:
                                                                 req_name = "dataset\\dataset\\" + match_img
-                                                                print (req_name)
                                                                 if (self.results.get(req_name) != None):
                                                                         self.results[req_name] -= self.WEIGHT_TEXT
                                                         break # go to next word
