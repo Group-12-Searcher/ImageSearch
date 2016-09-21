@@ -75,8 +75,8 @@ class UI_class:
         # convert query image to grayscale
         convertQueryToGray(self.filename)
         # generate key file for query
-        with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
-            subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
+        #with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
+         #   subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
 
         # convert query image to list of texts (if any)
         reader = csv.reader(open("dataset\\dataset\\combined_text_tags.txt"), delimiter=" ")
