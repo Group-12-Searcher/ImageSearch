@@ -32,7 +32,7 @@ from keras.utils.data_utils import get_file
 from keras import backend as K
 from imagenet_utils import decode_predictions
 
-USER = 'Tay'
+USER = 'Rufus'
 
 TH_WEIGHTS_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.2/inception_v3_weights_th_dim_ordering_th_kernels.h5'
 TF_WEIGHTS_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.2/inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
@@ -320,24 +320,41 @@ def preprocess_input(x):
     return x
 
 
-if __name__ == '__main__':
+def deepSearch(img_path):
     model = InceptionV3(include_top=True, weights='imagenet')
-    # model = load_model(('C:\\Users\\' + USER + '\\.keras\models\inceptionv3_model.h5'))
 
-    file_opt = options = {}
-    options['initialdir'] = 'C:\\Users\\Tay\\Desktop\\NUS\\Modules\\CS2108\\Assignment 1\\ImageData\\ImageData\\test\\data'
-
-    root = tk.Tk()
-    root.withdraw()
-    img_path = tkFileDialog.askopenfilename(**file_opt)
-    root.destroy()
-    
-    #img_path = 'C:\\Users\\Tay\\Desktop\\NUS\\Modules\\CS2108\\Assignment 1\\ImageData\\ImageData\\test\\data\\train\\0253_421644823.jpg'
     img = image.load_img(img_path, target_size=(299, 299))
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
 
     x = preprocess_input(x)
+    print("Predicting class...")
+    preds = model.predict(x)
+    dp = decode_predictions(preds)
+    print('Predicted:', dp[0][1])
+    return dp[0][1]
 
+
+if __name__ == '__main__':
+    print('start')
+    model = InceptionV3(include_top=True, weights='imagenet')
+    # model = load_model(('C:\\Users\\' + USER + '\\.keras\models\inceptionv3_model.h5'))
+
+    '''file_opt = options = {}
+    options['initialdir'] = 'C:\\Users\\Tay\\Desktop\\NUS\\Modules\\CS2108\\Assignment 1\\ImageData\\ImageData\\test\\data'
+
+    root = tk.Tk()
+    root.withdraw()
+    img_path = tkFileDialog.askopenfilename(**file_opt)
+    root.destroy()'''
+    
+    #img_path = 'C:\\Users\\Tay\\Desktop\\NUS\\Modules\\CS2108\\Assignment 1\\ImageData\\ImageData\\test\\data\\train\\0253_421644823.jpg'
+    img_path = "orca.jpg"
+    img = image.load_img(img_path, target_size=(299, 299))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    print('...')
+    x = preprocess_input(x)
+    print('...')
     preds = model.predict(x)
     print('Predicted:', decode_predictions(preds))

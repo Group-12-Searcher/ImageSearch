@@ -2,6 +2,7 @@
 from pyimagesearch.colordescriptor import ColorDescriptor
 from pyimagesearch.semanticsreader import SemanticsReader
 from pyimagesearch.searcher import Searcher
+from deepLearning.inception_v3 import deepSearch
 from sift.pgmconverter import convertQueryToGray
 import cv2
 from Tkinter import *
@@ -87,6 +88,9 @@ class UI_class:
                 req_line = line[6:]
                 break
         self.querytext = req_line
+
+        # Do deep learning
+        self.querycategory = deepSearch(self.filename)
         
         # show query image
         image_file = Image.open(self.filename)
@@ -105,8 +109,8 @@ class UI_class:
         self.result_img_frame.pack()
 
         # perform the search
-        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv")
-        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext)
+        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", "index_deeplearning.csv")
+        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext, self.querycategory)
 
         # show result pictures
         COLUMNS = 8

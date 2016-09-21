@@ -5,8 +5,8 @@ from keras.utils.data_utils import get_file
 from keras import backend as K
 
 CLASS_INDEX = None
-CLASS_INDEX_PATH = 'https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json'
-
+#CLASS_INDEX_PATH = 'https://s3.amazonaws.com/deep-learning-models/image-models/imagenet_class_index.json'
+CLASS_INDEX_PATH = "imagenet_class_index.json"
 
 def preprocess_input(x, dim_ordering='default'):
     if dim_ordering == 'default':
