@@ -145,16 +145,25 @@ class Searcher:
                                 # initialize the CSV reader
                                 reader = csv.reader(f)
                                 # Loop over all the tagged words for query image
+                                # print(queryText)
                                 if (queryText != None):
                                         for word in queryText:
                                                 # loop over the rows in the index
                                                 for row in reader:
                                                         if (row[0] == word):
+                                                                # print("Match detected for word: %s" % word)
                                                                 # loop over all matching images
                                                                 for match_img in row[1:]:
                                                                         req_name = "dataset\\dataset\\" + match_img
-                                                                        if (self.results.get(req_name) != None):
-                                                                                self.results[req_name] -= self.WEIGHT_TEXT*100
+                                                                        if (os.path.exists(req_name)):
+                                                                                if (self.results.get(req_name) is not None):
+                                                                                        # print("Modifying value in existing result set for %s" % req_name)
+                                                                                        self.results[req_name] -= self.WEIGHT_TEXT*100
+                                                                                        # print(self.results[req_name])
+                                                                                else:
+                                                                                        # print("Adding this file: %s" % req_name)
+                                                                                        self.results[req_name] = self.WEIGHT_TEXT*100
+                                                                                        # print(self.results[req_name])
                                                                 break # go to next word
                                                 
                                 # close the reader
