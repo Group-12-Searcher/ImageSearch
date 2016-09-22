@@ -9,7 +9,7 @@ import threading
 from mysift import myMatch, myMatch2
 
 class Searcher:        
-	def __init__(self, indexPath, semanticsPath, textPath, deeplearningPath, flags):
+	def __init__(self, indexPath, semanticsPath, textPath, deeplearningPath, flags, searchTerm):
 		# store our index path
 		self.indexPath = indexPath
 		self.semanticsPath = semanticsPath
@@ -20,6 +20,7 @@ class Searcher:
                 self.WEIGHT_SIFT = 0.03 * flags["vk"]
                 self.WEIGHT_TEXT = 0.1 * flags["tf"]
                 self.WEIGHT_DL = 0.4 * flags["dl"]
+                self.searchTerm = searchTerm
 
                 self.results = {}
 
@@ -138,7 +139,7 @@ class Searcher:
                                 self.results["dataset\\dataset\\"+dbImage+".jpg"] -= d * self.WEIGHT_SIFT
                         os.chdir("..")
 
-                if self.WEIGHT_TEXT != 0:
+                if self.WEIGHT_TEXT != 0 or self.searchTerm != "":
                         # open the text index file for reading
                         with open(self.textPath) as f:
                                 print("Doing text search...")
@@ -146,7 +147,30 @@ class Searcher:
                                 reader = csv.reader(f)
                                 # Loop over all the tagged words for query image
                                 # print(queryText)
+                                if (self.searchTerm != ""):
+                                        # print("Search term is supplied: %s" % self.searchTerm)
+                                        # loop over the rows in the index
+                                        for row in reader:
+                                                # print(row[0])
+                                                if (row[0] == self.searchTerm):
+                                                        # print("Match detected for word: %s" % word)
+                                                        # loop over all matching images
+                                                        for match_img in row[1:]:
+                                                                req_name = "dataset\\dataset\\" + match_img
+                                                                if (os.path.exists(req_name)):
+                                                                        if (self.results.get(req_name) is not None):
+                                                                                # print("Modifying value in existing result set for %s" % req_name)
+                                                                                self.results[req_name] -= self.WEIGHT_TEXT*100
+                                                                                # print(self.results[req_name])
+                                                                        else:
+                                                                                # print("Adding this file: %s" % req_name)
+                                                                                self.results[req_name] = self.WEIGHT_TEXT*100
+                                                                                # print(self.results[req_name])
+                                                        break # go to next word
+                                        
                                 if (queryText != None):
+                                        # print("Query image has text tags.")
+                                        print(queryText)
                                         for word in queryText:
                                                 # loop over the rows in the index
                                                 for row in reader:
@@ -210,6 +234,8 @@ class Searcher:
                                         self.results[imgPath] -= score
                                         #print(img, score)
                         f.close()
+                
+                # print(len(self.results))
 
 		# sort our results, so that the smaller distances (i.e. the
 		# more relevant images are at the front of the list)

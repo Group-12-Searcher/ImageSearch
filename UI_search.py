@@ -23,6 +23,7 @@ class UI_class:
         # these variables are declared for implementing the flushing of old (query + results)
         self.isUploadingImage = False
 
+        self.filename = None
         self.currFilename = ""
         self.searchCount = 0
         self.isSameFile = False
@@ -40,6 +41,10 @@ class UI_class:
         self.bbutton.grid(row=1, column=1)
         self.cbutton = Button(self.topframe, text=" Search ", command=self.show_results_imgs)
         self.cbutton.grid(row=1, column=2)
+        self.tf_label = Label(self.topframe, text="Enter search term: ")
+        self.tf_label.grid(row=2, column=1)
+        self.tf_input = Entry(self.topframe)
+        self.tf_input.grid(row=2, column=2, columnspan=2)
 
         self.result_img_frame = Frame(self.master)
         self.result_img_frame.pack()
@@ -151,11 +156,6 @@ class UI_class:
         self.tf_scale.bind("<ButtonRelease-1>", self.tf_adjust_others)
         self.option_sliders.append(self.tf_scale)
         self.tf_scale.pack()
-        self.tf_label = Label(self.master, text="Enter search term: ")
-        self.tf_label.pack()
-        self.tf_input = Entry(self.master)
-        self.tf_input.config(state=DISABLED)
-        self.tf_input.pack()
 
     def toggle_ch_slider(self, event):
         if self.option_vars[0].get() == 0:
@@ -234,7 +234,6 @@ class UI_class:
             self.count = self.count + 1
             self.option_flags[4] = 1
             self.option_sliders[4].config(state=NORMAL)
-            self.tf_input.config(state=NORMAL)
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
@@ -243,7 +242,6 @@ class UI_class:
             self.option_flags[4] = 0
             self.option_sliders[4].set(0.0)
             self.option_sliders[4].config(state=DISABLED)
-            self.tf_input.config(state=DISABLED)
             if self.count != 0:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
@@ -312,6 +310,7 @@ class UI_class:
                     self.option_sliders[i].set(self.option_sliders[i].get() + difference)
 
     def browse_query_img(self):
+        self.tf_input.delete(0, END)
         # user wants to enter a query; flush old (query + results)
         self.isUploadingImage = True
         self.query_img_frame.destroy()
@@ -320,7 +319,8 @@ class UI_class:
         self.query_img_frame = Frame(self.master)
         self.query_img_frame.pack()
         from tkFileDialog import askopenfilename
-        self.filename = tkFileDialog.askopenfile(title='Choose an Image File').name
+        imageFile = tkFileDialog.askopenfile(title='Choose an Image File')
+        self.filename = imageFile.name
         self.preprocess_image()
 
         if (self.toLogResults):
@@ -350,6 +350,12 @@ class UI_class:
 
         self.reload_options()
         self.load_options()
+
+        if (self.count == 0):
+            self.tf_input.config(state=NORMAL)
+        else:
+            self.tf_input.delete(0, len(self.tf_input.get()))
+            self.tf_input.config(state=DISABLED)
         
         self.query_img_frame.mainloop()
 
@@ -419,48 +425,45 @@ class UI_class:
         return options
 
     def show_results_imgs(self):
-        if (self.count == 0):
-            tkMessageBox.showwarning("Alert", "Please select at least 1 option.")
-            self.result_img_frame.mainloop()
+        if (self.count == 0 and self.tf_input.get() == ""):
+            tkMessageBox.showwarning("Alert", "Please enter a search term, or upload image.")
 
-        print(self.filename)
-        print(self.currFilename)
-                
-        if (self.filename == self.currFilename):
-            self.isSameFile = True
         else:
-            self.isSameFile = False
-        
-        # user now wants to commence the search; load frame for displaying results of query
-        self.isUploadingImage = False;
-        # self.result_img_frame = Frame(self.master)
-        self.result_img_frame.pack()
+            if (self.filename == self.currFilename):
+                self.isSameFile = True
+            else:
+                self.isSameFile = False
+            
+            # user now wants to commence the search; load frame for displaying results of query
+            self.isUploadingImage = False;
+            # self.result_img_frame = Frame(self.master)
+            self.result_img_frame.pack()
 
-        flags = self.get_options()
+            flags = self.get_options()
 
-        # perform the search
-        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", "index_deeplearning.csv", flags)
-        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext, self.querycategory)
+            # perform the search
+            searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", "index_deeplearning.csv", flags, self.tf_input.get())
+            results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext, self.querycategory)
 
-        # show result pictures
-        COLUMNS = 8
-        image_count = 0
-        for (score, resultID) in results:
-            # load the result image and display it
-            image_count += 1
-            r, c = divmod(image_count - 1, COLUMNS)
-            im = Image.open(resultID)
-            resized = im.resize((100, 100), Image.ANTIALIAS)
-            tkimage = ImageTk.PhotoImage(resized)
-            myvar = Label(self.result_img_frame, image=tkimage)
-            myvar.image = tkimage
-            myvar.grid(row=r, column=c)
+            # show result pictures
+            COLUMNS = 8
+            image_count = 0
+            for (score, resultID) in results:
+                # load the result image and display it
+                image_count += 1
+                r, c = divmod(image_count - 1, COLUMNS)
+                im = Image.open(resultID)
+                resized = im.resize((100, 100), Image.ANTIALIAS)
+                tkimage = ImageTk.PhotoImage(resized)
+                myvar = Label(self.result_img_frame, image=tkimage)
+                myvar.image = tkimage
+                myvar.grid(row=r, column=c)
 
-        if (self.toLogResults):
-            numRelevant = logResults.get_precision(self.queryImageCategory, results)
-            print(numRelevant)
+            if (self.toLogResults):
+                numRelevant = logResults.get_precision(self.queryImageCategory, results)
+                print(numRelevant)
 
-        self.currFilename = self.filename
+            self.currFilename = self.filename
 
         self.result_img_frame.mainloop()
 
