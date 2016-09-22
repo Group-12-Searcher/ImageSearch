@@ -356,7 +356,8 @@ class UI_class:
 
         # process query image to feature vector
         # initialize the image descriptor
-        cd = ColorDescriptor((8, 12, 3))
+        #cd = ColorDescriptor((8, 12, 3))
+        cd = ColorDescriptor((3, 3, 2))
         sr = SemanticsReader()
 
         if (self.option_flags[0] == 1):
