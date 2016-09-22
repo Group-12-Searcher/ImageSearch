@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 import os
 import subprocess
 import csv
+import logResults
 
 class UI_class:
     
@@ -33,6 +34,9 @@ class UI_class:
         self.querysemantics = None
         self.querytext = None
         self.querycategory = None
+
+        self.toLogResults = True
+        self.queryImageCategory = ''
 
         #Buttons        
         self.bbutton= Button(self.topframe, text=" Choose an image ", command=self.browse_query_img)
@@ -312,6 +316,11 @@ class UI_class:
         from tkFileDialog import askopenfilename
         self.filename = tkFileDialog.askopenfile(title='Choose an Image File').name
 
+        if (self.toLogResults):
+            fileNameCopy = self.filename
+            self.queryImageCategory = fileNameCopy.split('/')[12]
+            # print(self.queryImageCategory)
+
         # show query image
         if (self.filename is None and self.currFilename is not None):
             image_file = Image.open(self.currFilename)
@@ -460,6 +469,10 @@ class UI_class:
             myvar = Label(self.result_img_frame, image=tkimage)
             myvar.image = tkimage
             myvar.grid(row=r, column=c)
+
+        if (self.toLogResults):
+            numRelevant = logResults.get_precision(self.queryImageCategory, results)
+            print(numRelevant)
 
         self.currFilename = self.filename
 
