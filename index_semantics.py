@@ -9,7 +9,7 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--semantics", required = False, default='semanticResults',
+ap.add_argument("-d", "--semantics", required = False, default='dataset\\dataset',
 	help = "Path to the directory that contains the images to be indexed")
 ap.add_argument("-i", "--index_semantics", required = False, default='index_semantics.csv',
 	help = "Path to where the computed index will be stored")
@@ -28,6 +28,8 @@ for textFile in glob.glob(args["semantics"] + "/*.txt"):
         else:
                 imageID = "dataset\\dataset\\" + textFile[textFile.rfind("\\") + 1:].split(".")[0]+".jpg"
         # extract semantics values from text file
+        if (textFile == "dataset\\dataset\\combined_text_tags.txt"):
+                break
         features = sr.read(textFile)
 
         # write the features to file

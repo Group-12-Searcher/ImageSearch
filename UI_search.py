@@ -2,6 +2,7 @@
 from pyimagesearch.colordescriptor import ColorDescriptor
 from pyimagesearch.semanticsreader import SemanticsReader
 from pyimagesearch.searcher import Searcher
+from deepLearning.inception_v3 import deepSearch
 from sift.pgmconverter import convertQueryToGray
 import cv2
 from Tkinter import *
@@ -26,6 +27,7 @@ class UI_class:
         self.isSameFile = False
         self.isProcessed1 = False
         self.isProcessed2 = False
+        self.isProcessed3 = False
 
         self.queryfeatures = None
         self.querysemantics = None
@@ -337,13 +339,15 @@ class UI_class:
         print(self.isSameFile)
         print(self.isProcessed1)
         print(self.isProcessed2)
-        if (self.isSameFile and self.isProcessed1 and self.isProcessed2):
+        print(self.isProcessed3)
+        if (self.isSameFile and self.isProcessed1 and self.isProcessed2 and self.isProcessed3):
             return
 
         # process query image to feature vector
         # initialize the image descriptor
         cd = ColorDescriptor((8, 12, 3))
         sr = SemanticsReader()
+
         if (self.option_flags[0] == 1):
             # load the query image and describe it
             query = cv2.imread(self.filename)
@@ -386,9 +390,22 @@ class UI_class:
                 # convert query image to grayscale
                 convertQueryToGray(self.filename)
                 # generate key file for query
-                with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
-                    subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
+                #with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
+                #   subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
                 self.isProcessed2= True
+
+        if (self.option_flags[3] == 1):
+            if (not self.isProcessed3):
+                # Do deep learning
+                self.querycategory = deepSearch(self.filename)
+                self.isProcessed3 = True
+
+        # show query image
+        image_file = Image.open(self.filename)
+        resized = image_file.resize((100, 100), Image.ANTIALIAS)
+        im = ImageTk.PhotoImage(resized)
+        image_label = Label(self.query_img_frame, image=im)
+        image_label.pack()
 
 
     def get_options(self):
@@ -414,6 +431,7 @@ class UI_class:
             self.isSameFile = False
             self.isProcessed1 = False
             self.isProcessed2 = False
+            self.isProcessed3 = False
             
         self.preprocess_image()
         
@@ -425,8 +443,8 @@ class UI_class:
         flags = self.get_options()
 
         # perform the search
-        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", flags)
-        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext)
+        searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", "index_deeplearning.csv", flags)
+        results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext, self.querycategory)
 
         # show result pictures
         COLUMNS = 8

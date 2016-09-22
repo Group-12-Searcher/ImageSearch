@@ -6,6 +6,9 @@ def myMatch(img1, img2):
 
     img1 = cv2.imread(img1,0)          # queryImage
     img2 = cv2.imread(img2,0) # trainImage
+
+    img1 = img1.astype(np.uint8)
+    img2 = img2.astype(np.uint8)
     
     # Initiate SIFT detector
     orb = cv2.ORB()
@@ -13,6 +16,10 @@ def myMatch(img1, img2):
     # find the keypoints and descriptors with SIFT
     kp1, des1 = orb.detectAndCompute(img1,None)
     kp2, des2 = orb.detectAndCompute(img2,None)
+
+    # If no keypoints are found, return no matches
+    if ((des1 is None) or (des2 is None)):
+        return 0
 
     # create BFMatcher object
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
@@ -22,17 +29,17 @@ def myMatch(img1, img2):
 
     # Sort them in the order of their distance.
     matches = sorted(matches, key = lambda x:x.distance)
-    d = 0
+    '''d = 0
     for i in range(15):
         d += matches[i].distance
-    return -d/15.0
+    return -d/15.0'''
         
 
-    '''for i in range(len(matches)):
-        if matches[i].distance > 65:
+    for i in range(len(matches)):
+        if matches[i].distance > 70:
             return i
             #return ((len(matches) - i) / float(len(matches)) * 100)
-    return len(matches)'''
+    return len(matches)
 
 
 
