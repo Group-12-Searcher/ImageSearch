@@ -318,7 +318,8 @@ class UI_class:
 
         if (self.toLogResults):
             fileNameCopy = self.filename
-            self.queryImageCategory = fileNameCopy.split('/')[12]
+            parts = fileNameCopy.split('/')
+            self.queryImageCategory = parts[len(parts) - 2]
             # print(self.queryImageCategory)
 
         # show query image
