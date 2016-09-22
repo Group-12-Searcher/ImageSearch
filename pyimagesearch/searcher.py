@@ -142,7 +142,11 @@ class Searcher:
                                         hist2.append(float(x))
                                 d = self.chi2_distance(hist1, hist2)
                                 #d = myMatch(im1, im2)
-                                self.results["dataset\\dataset\\"+dbImage+".jpg"] -= d * self.WEIGHT_SIFT
+                                req_img_name = "dataset\\dataset\\"+dbImage+".jpg"
+                                if self.results.get(req_img_name) is None:
+                                        self.results[req_img_name] = d * self.WEIGHT_SIFT
+                                else:
+                                        self.results[req_img_name] -= d * self.WEIGHT_SIFT
                         os.chdir("..")
 
                 if self.WEIGHT_TEXT != 0:
