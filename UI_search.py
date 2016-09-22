@@ -66,6 +66,8 @@ class UI_class:
         self.dl_scale.pack_forget()
         self.checkButton5.pack_forget()
         self.tf_scale.pack_forget()
+        self.tf_label.pack_forget()
+        self.tf_input.pack_forget()
 
     def load_options(self):
         self.colorHist = IntVar()
@@ -149,6 +151,11 @@ class UI_class:
         self.tf_scale.bind("<ButtonRelease-1>", self.tf_adjust_others)
         self.option_sliders.append(self.tf_scale)
         self.tf_scale.pack()
+        self.tf_label = Label(self.master, text="Enter search term: ")
+        self.tf_label.pack()
+        self.tf_input = Entry(self.master)
+        self.tf_input.config(state=DISABLED)
+        self.tf_input.pack()
 
     def toggle_ch_slider(self, event):
         if self.option_vars[0].get() == 0:
@@ -227,6 +234,7 @@ class UI_class:
             self.count = self.count + 1
             self.option_flags[4] = 1
             self.option_sliders[4].config(state=NORMAL)
+            self.tf_input.config(state=NORMAL)
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
@@ -235,6 +243,7 @@ class UI_class:
             self.option_flags[4] = 0
             self.option_sliders[4].set(0.0)
             self.option_sliders[4].config(state=DISABLED)
+            self.tf_input.config(state=DISABLED)
             if self.count != 0:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
