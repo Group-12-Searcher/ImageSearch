@@ -7,12 +7,13 @@ def vwHist(img, toWrite = True):
     img = cv2.imread(img, 0)
     img = img.astype(np.uint8)
     
-    orb = cv2.ORB()
+    orb = cv2.SIFT()
     kp, des = orb.detectAndCompute(img, None)
-    
-    hist = [0.0] * 90
+
+    BIN = 90
+    hist = [0.0] * BIN
     for k in kp:
-        hist[int(k.angle/4.0)] += float(k.response)
+        hist[int(k.angle/(360.0/BIN))] += float(k.response)
         #print(hist[int(k.angle)])
 
     op = open(name+".txt", 'w')
