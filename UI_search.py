@@ -26,16 +26,13 @@ class UI_class:
         self.currFilename = ""
         self.searchCount = 0
         self.isSameFile = False
-        self.isProcessed1 = False
-        self.isProcessed2 = False
-        self.isProcessed3 = False
 
         self.queryfeatures = None
         self.querysemantics = None
         self.querytext = None
         self.querycategory = None
 
-        self.toLogResults = True
+        self.toLogResults = False
         self.queryImageCategory = ''
 
         #Buttons        
@@ -315,10 +312,12 @@ class UI_class:
         self.query_img_frame.pack()
         from tkFileDialog import askopenfilename
         self.filename = tkFileDialog.askopenfile(title='Choose an Image File').name
+        self.preprocess_image()
 
         if (self.toLogResults):
             fileNameCopy = self.filename
-            self.queryImageCategory = fileNameCopy.split('/')[12]
+            parts = fileNameCopy.split('/')
+            self.queryImageCategory = parts[len(parts) - 2]
             # print(self.queryImageCategory)
 
         # show query image
@@ -346,69 +345,51 @@ class UI_class:
         self.query_img_frame.mainloop()
 
     def preprocess_image(self):
-        print(self.isSameFile)
-        print(self.isProcessed1)
-        print(self.isProcessed2)
-        print(self.isProcessed3)
-        if (self.isSameFile and self.isProcessed1 and self.isProcessed2 and self.isProcessed3):
-            return
-
         # process query image to feature vector
         # initialize the image descriptor
         cd = ColorDescriptor((8, 12, 3))
         sr = SemanticsReader()
 
-        if (self.option_flags[0] == 1):
-            # load the query image and describe it
-            query = cv2.imread(self.filename)
-            self.queryfeatures = cd.describe(query)
+        # load the query image and describe it
+        query = cv2.imread(self.filename)
+        self.queryfeatures = cd.describe(query)
 
-        if (self.option_flags[4] == 1):
-            # convert query image to list of texts (if any)
-            reader = csv.reader(open("dataset\\dataset\\combined_text_tags.txt"), delimiter=" ")
-            # find the line belonging to query image, req_line = None if no tags found
-            img_name = self.filename.split("/")[-1]
-            req_line = None
-            for line in reader:
-                if (line[0] == img_name):
-                    req_line = line[6:]
-                    break
-            self.querytext = req_line
+        # convert query image to list of texts (if any)
+        reader = csv.reader(open("dataset\\dataset\\combined_text_tags.txt"), delimiter=" ")
+        # find the line belonging to query image, req_line = None if no tags found
+        img_name = self.filename.split("/")[-1]
+        req_line = None
+        for line in reader:
+            if (line[0] == img_name):
+                req_line = line[6:]
+                break
+        self.querytext = req_line
 
-        if (self.option_flags[2] == 1):
-            if (not self.isProcessed1):
-                # process query image to semantics vector
-                # generate temp.txt for exe to run on it.
-                tempfile = open("semanticFeature\\temp.txt", "w")
-                tempfile.write(self.filename)
-                tempfile.close()
-                # generate the txt file with 1000D for query
-                FNULL = open(os.devnull, 'w') #suppress output to stdout
-                os.chdir("semanticFeature")
-                args = "./image_classification.exe temp.txt"
-                #subprocess.call(args, stdout=FNULL, stderr=FNULL)
-                subprocess.call(args)
-                os.chdir("../")
-                # read 1000D vector for semantics
-                reqfile = self.filename
-                base, ext = os.path.splitext(reqfile)
-                self.querysemantics = sr.read(base + ".txt")
-                self.isProcessed1 = True
+        # process query image to semantics vector
+        # generate temp.txt for exe to run on it.
+        tempfile = open("semanticFeature\\temp.txt", "w")
+        tempfile.write(self.filename)
+        tempfile.close()
+        # generate the txt file with 1000D for query
+        FNULL = open(os.devnull, 'w') #suppress output to stdout
+        os.chdir("semanticFeature")
+        args = "./image_classification.exe temp.txt"
+        #subprocess.call(args, stdout=FNULL, stderr=FNULL)
+        subprocess.call(args)
+        os.chdir("../")
+        # read 1000D vector for semantics
+        reqfile = self.filename
+        base, ext = os.path.splitext(reqfile)
+        self.querysemantics = sr.read(base + ".txt")
 
-        if (self.option_flags[1] == 1):
-            if (not self.isProcessed2):
-                # convert query image to grayscale
-                convertQueryToGray(self.filename)
-                # generate key file for query
-                #with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
-                #   subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
-                self.isProcessed2= True
+        # convert query image to grayscale
+        convertQueryToGray(self.filename)
+        # generate key file for query
+        #with open("sift/temp/query.pgm","rb") as ip, open("sift/temp/query.key","wb") as op:
+        #   subprocess.call("sift/siftWin32.exe",stdin=ip,stdout=op)
 
-        if (self.option_flags[3] == 1):
-            if (not self.isProcessed3):
-                # Do deep learning
-                self.querycategory = deepSearch(self.filename)
-                self.isProcessed3 = True
+        # Do deep learning
+        # self.querycategory = deepSearch(self.filename)
 
         # show query image
         '''image_file = Image.open(self.filename)
@@ -439,11 +420,6 @@ class UI_class:
             self.isSameFile = True
         else:
             self.isSameFile = False
-            self.isProcessed1 = False
-            self.isProcessed2 = False
-            self.isProcessed3 = False
-            
-        self.preprocess_image()
         
         # user now wants to commence the search; load frame for displaying results of query
         self.isUploadingImage = False;
