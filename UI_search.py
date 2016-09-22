@@ -402,11 +402,11 @@ class UI_class:
                 self.isProcessed3 = True
 
         # show query image
-        image_file = Image.open(self.filename)
+        '''image_file = Image.open(self.filename)
         resized = image_file.resize((100, 100), Image.ANTIALIAS)
         im = ImageTk.PhotoImage(resized)
         image_label = Label(self.query_img_frame, image=im)
-        image_label.pack()
+        image_label.pack()'''
 
 
     def get_options(self):
