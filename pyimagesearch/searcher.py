@@ -6,7 +6,9 @@ import glob
 import subprocess
 import os
 import threading
-from mysift import myMatch, myMatch2
+from mysift import myMatch
+
+from sift.vwhist import vwHist
 
 class Searcher:        
 	def __init__(self, indexPath, semanticsPath, textPath, deeplearningPath, flags, searchTerm):
@@ -15,7 +17,7 @@ class Searcher:
 		self.semanticsPath = semanticsPath
 		self.textPath = textPath
 		self.deeplearningPath = deeplearningPath
-                self.WEIGHT_CH = 0.07 * flags["ch"]
+		self.WEIGHT_CH = 0.07 * flags["ch"]
                 self.WEIGHT_SEM = 0.4 * flags["vc"]
                 self.WEIGHT_SIFT = 0.03 * flags["vk"]
                 self.WEIGHT_TEXT = 0.1 * flags["tf"]
@@ -130,13 +132,23 @@ class Searcher:
                         ### My own experimental sift ###
                         print("Doing sift matching...")
                         os.chdir("sift")
+                        im1 = "temp/query.pgm"
+                        hist1 = vwHist(im1, False)
                         for f in glob.glob("*.pgm"):
                                 dbImage = f.split('/')[-1].split('.')[0]
                                 im1 = "temp/query.pgm"
                                 im2 = dbImage+".pgm"
-                                #print("Sift matching {}.jpg...").format(dbImage)
-                                d = myMatch(im1, im2)
-                                self.results["dataset\\dataset\\"+dbImage+".jpg"] -= d * self.WEIGHT_SIFT
+                                hist2 = []
+                                histFile = open(dbImage+'.txt', 'r')
+                                for x in histFile:
+                                        hist2.append(float(x))
+                                d = self.chi2_distance(hist1, hist2)
+                                #d = myMatch(im1, im2)
+                                req_img_name = "dataset\\dataset\\"+dbImage+".jpg"
+                                if self.results.get(req_img_name) is None:
+                                        self.results[req_img_name] = d * self.WEIGHT_SIFT
+                                else:
+                                        self.results[req_img_name] -= d * self.WEIGHT_SIFT
                         os.chdir("..")
 
                 if self.WEIGHT_TEXT != 0 or self.searchTerm != "":
@@ -242,6 +254,23 @@ class Searcher:
 		self.results = sorted([(v, k) for (k, v) in self.results.items()])
 		
 		# return our (limited) self.results
+		topImages = []
+		for r in self.results[:limit]:
+                        topImages.append(r[1].split('\\')[-1])
+                        
+                index_categories = open("index_categories.csv", 'r')
+                catReader = csv.reader(index_categories)
+                topImagesCats = [0]*16
+                for row in catReader:
+                        if row[0] in topImages:
+                                topImagesCats[topImages.index(row[0])] = row[1:]
+                index_categories.close()
+                
+                i = 1
+                for cats in topImagesCats:
+                        print("{}. {}: {}".format(i, topImages[i-1], cats))
+                        i += 1
+                print("")
 		return self.results[:limit]
 
 	def chi2_distance(self, histA, histB, eps = 1e-10):
