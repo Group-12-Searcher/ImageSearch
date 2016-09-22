@@ -7,7 +7,8 @@ import subprocess
 import os
 import threading
 from mysift import myMatch
-from vwhist import vwHist
+
+from sift.vwhist import vwHist
 
 class Searcher:        
 	def __init__(self, indexPath, semanticsPath, textPath, deeplearningPath, flags):
@@ -16,7 +17,7 @@ class Searcher:
 		self.semanticsPath = semanticsPath
 		self.textPath = textPath
 		self.deeplearningPath = deeplearningPath
-                self.WEIGHT_CH = 0.07 * flags["ch"]
+		self.WEIGHT_CH = 0.07 * flags["ch"]
                 self.WEIGHT_SEM = 0.4 * flags["vc"]
                 self.WEIGHT_SIFT = 0.03 * flags["vk"]
                 self.WEIGHT_TEXT = 0.1 * flags["tf"]
@@ -131,7 +132,7 @@ class Searcher:
                         print("Doing sift matching...")
                         os.chdir("sift")
                         im1 = "temp/query.pgm"
-                        hist1 = vwHist(im1)
+                        hist1 = vwHist(im1, False)
                         for f in glob.glob("*.pgm"):
                                 dbImage = f.split('/')[-1].split('.')[0]
                                 im1 = "temp/query.pgm"

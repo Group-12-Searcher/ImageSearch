@@ -2,7 +2,7 @@ import cv2
 import glob
 import numpy as np
 
-def vwHist(img):
+def vwHist(img, toWrite = True):
     name = img.split('.')[0]
     img = cv2.imread(img, 0)
     img = img.astype(np.uint8)
@@ -16,10 +16,11 @@ def vwHist(img):
         #print(hist[int(k.angle)])
 
     op = open(name+".txt", 'w')
-    for x in hist:
-        op.write('%f ' % x)
-        op.write('\n')
-    op.close()
+    if (toWrite):
+        for x in hist:
+            op.write('%f ' % x)
+            op.write('\n')
+        op.close()
     return hist
 
 for f in glob.glob("*.pgm"):
