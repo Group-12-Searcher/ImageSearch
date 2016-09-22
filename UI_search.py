@@ -347,7 +347,8 @@ class UI_class:
     def preprocess_image(self):
         # process query image to feature vector
         # initialize the image descriptor
-        cd = ColorDescriptor((8, 12, 3))
+        #cd = ColorDescriptor((8, 12, 3))
+        cd = ColorDescriptor((3, 3, 2))
         sr = SemanticsReader()
 
         # load the query image and describe it
