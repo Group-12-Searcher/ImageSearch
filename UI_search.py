@@ -31,7 +31,8 @@ class UI_class:
 
         self.queryfeatures = None
         self.querysemantics = None
-        self.querytext= None
+        self.querytext = None
+        self.querycategory = None
 
         #Buttons        
         self.bbutton= Button(self.topframe, text=" Choose an image ", command=self.browse_query_img)
