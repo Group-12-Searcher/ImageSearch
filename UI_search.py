@@ -2,7 +2,7 @@
 from pyimagesearch.colordescriptor import ColorDescriptor
 from pyimagesearch.semanticsreader import SemanticsReader
 from pyimagesearch.searcher import Searcher
-from deepLearning.inception_v3 import deepSearch
+# from deepLearning.inception_v3 import deepSearch
 from sift.pgmconverter import convertQueryToGray
 import cv2
 from Tkinter import *
@@ -58,8 +58,8 @@ class UI_class:
 
         self.topframe.pack()
 
-        self.option_flags = [0,0,0,0,0]
-        self.option_weights = [0.0,0.0,0.0,0.0,0.0]
+        self.option_flags = [0,0,0,0]
+        self.option_weights = [0.0,0.0,0.0,0.0]
         self.count = 0
 
         self.load_options()
@@ -68,8 +68,8 @@ class UI_class:
         self.master.mainloop()
 
     def clear_window(self):
-        self.option_flags = [0,0,0,0,0]
-        self.option_weights = [0.0,0.0,0.0,0.0,0.0]
+        self.option_flags = [0,0,0,0]
+        self.option_weights = [0.0,0.0,0.0,0.0]
         self.count = 0
         self.reload_options()
         self.load_options()
@@ -88,9 +88,9 @@ class UI_class:
         self.vk_scale.pack_forget()
         self.checkButton3.pack_forget()
         self.vc_scale.pack_forget()
+        # self.checkButton4.pack_forget()
+        # self.dl_scale.pack_forget()
         self.checkButton4.pack_forget()
-        self.dl_scale.pack_forget()
-        self.checkButton5.pack_forget()
         self.tf_scale.pack_forget()
         self.tf_label.pack_forget()
         self.tf_input.pack_forget()
@@ -99,9 +99,9 @@ class UI_class:
         self.colorHist = IntVar()
         self.visualKeyword = IntVar()
         self.visualConcept = IntVar()
-        self.deepLearning = IntVar()
+        # self.deepLearning = IntVar()
         self.textFeature = IntVar()
-        self.option_vars = [self.colorHist, self.visualKeyword, self.visualConcept, self.deepLearning, self.textFeature]
+        self.option_vars = [self.colorHist, self.visualKeyword, self.visualConcept, self.textFeature]
         self.option_boxes = []
         self.option_sliders = []
 
@@ -148,6 +148,7 @@ class UI_class:
         self.vc_scale.pack()
 
         # Deep Learning inputs
+        '''
         self.dl = Label(self.topframe).grid(row=1)
         self.checkButton4 = Checkbutton(self.master, text="Deep Learning", variable=self.deepLearning)
         self.checkButton4.deselect()
@@ -159,15 +160,15 @@ class UI_class:
         self.dl_scale.bind("<Button-1>", self.register_dl_original_value)
         self.dl_scale.bind("<ButtonRelease-1>", self.dl_adjust_others)
         self.option_sliders.append(self.dl_scale)
-        self.dl_scale.pack()
+        self.dl_scale.pack()'''
 
         # Text Features inputs
         self.tf = Label(self.topframe).grid(row=1)
-        self.checkButton5 = Checkbutton(self.master, text="Text Feature", variable=self.textFeature)
-        self.checkButton5.deselect()
-        self.option_boxes.append(self.checkButton5)
-        self.option_boxes[4].bind("<Button-1>", self.toggle_tf_slider)
-        self.checkButton5.pack()
+        self.checkButton4 = Checkbutton(self.master, text="Text Feature", variable=self.textFeature)
+        self.checkButton4.deselect()
+        self.option_boxes.append(self.checkButton4)
+        self.option_boxes[3].bind("<Button-1>", self.toggle_tf_slider)
+        self.checkButton4.pack()
         self.tf_scale = Scale(self.master, from_=0, to=1, resolution=0.01, orient=HORIZONTAL)
         self.tf_scale.config(state=DISABLED, length=800)
         self.tf_scale.bind("<Button-1>", self.register_tf_original_value)
@@ -175,8 +176,8 @@ class UI_class:
         self.option_sliders.append(self.tf_scale)
         self.tf_scale.pack()
 
-        self.checkButtons = [self.checkButton1, self.checkButton2, self.checkButton3, self.checkButton4, self.checkButton5]
-        for i in range(0, 5):
+        self.checkButtons = [self.checkButton1, self.checkButton2, self.checkButton3, self.checkButton4]
+        for i in range(0, 4):
             if self.count > 0:
                 if self.option_flags[i] == 1:
                     self.checkButtons[i].select()
@@ -190,7 +191,7 @@ class UI_class:
             self.count = self.count + 1
             self.option_flags[0] = 1
             self.option_sliders[0].config(state=NORMAL)
-            for i in range(0, 5):
+            for i in range(0, 4):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
                     self.option_weights[i] = self.option_sliders[i].get()
@@ -200,7 +201,7 @@ class UI_class:
             self.option_sliders[0].set(0.0)
             self.option_sliders[0].config(state=DISABLED)
             if self.count != 0:
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
                         self.option_weights[i] = self.option_sliders[i].get()
@@ -210,7 +211,7 @@ class UI_class:
             self.count = self.count + 1
             self.option_flags[1] = 1
             self.option_sliders[1].config(state=NORMAL)
-            for i in range(0, 5):
+            for i in range(0, 4):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
                     self.option_weights[i] = self.option_sliders[i].get()
@@ -220,7 +221,7 @@ class UI_class:
             self.option_sliders[1].set(0.0)
             self.option_sliders[1].config(state=DISABLED)
             if self.count != 0:
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
                         self.option_weights[i] = self.option_sliders[i].get()
@@ -230,7 +231,7 @@ class UI_class:
             self.count = self.count + 1
             self.option_flags[2] = 1
             self.option_sliders[2].config(state=NORMAL)
-            for i in range(0, 5):
+            for i in range(0, 4):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
                     self.option_weights[i] = self.option_sliders[i].get()
@@ -240,12 +241,12 @@ class UI_class:
             self.option_sliders[2].set(0.0)
             self.option_sliders[2].config(state=DISABLED)
             if self.count != 0:
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
                         self.option_weights[i] = self.option_sliders[i].get()
 
-    def toggle_dl_slider(self, event):
+    '''def toggle_dl_slider(self, event):
         if self.option_vars[3].get() == 0:
             self.count = self.count + 1
             self.option_flags[3] = 1
@@ -263,24 +264,24 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
-                        self.option_weights[i] = self.option_sliders[i].get()
+                        self.option_weights[i] = self.option_sliders[i].get()'''
 
     def toggle_tf_slider(self, event):
-        if self.option_vars[4].get() == 0:
+        if self.option_vars[3].get() == 0:
             self.count = self.count + 1
-            self.option_flags[4] = 1
-            self.option_sliders[4].config(state=NORMAL)
-            for i in range(0, 5):
+            self.option_flags[3] = 1
+            self.option_sliders[3].config(state=NORMAL)
+            for i in range(0, 4):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
                     self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
-            self.option_flags[4] = 0
-            self.option_sliders[4].set(0.0)
-            self.option_sliders[4].config(state=DISABLED)
+            self.option_flags[3] = 0
+            self.option_sliders[3].set(0.0)
+            self.option_sliders[3].config(state=DISABLED)
             if self.count != 0:
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
                         self.option_weights[i] = self.option_sliders[i].get()
@@ -297,9 +298,9 @@ class UI_class:
         self.option_weights[2] = self.option_sliders[2].get()
         #print("VC: %s" % (self.option_weights[2]))
 
-    def register_dl_original_value(self, event):
+    '''def register_dl_original_value(self, event):
         self.option_weights[3] = self.option_sliders[3].get()
-        #print("DL: %s" % (self.option_weights[3]))
+        #print("DL: %s" % (self.option_weights[3]))'''
 
     def register_tf_original_value(self, event):
         self.option_weights[4] = self.option_sliders[4].get()
@@ -310,7 +311,7 @@ class UI_class:
             self.option_weights[0] = self.option_sliders[0].get()
             remainder = 1.0 - self.option_weights[0]
             if remainder == 0:
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 0 and self.option_flags[i] == 1:
                         self.count = self.count - 1
                         self.option_flags[i] = 0
@@ -319,11 +320,11 @@ class UI_class:
                         self.checkButtons[i].deselect()
             else:
                 sumOfOtherWeights = 0
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 0 and self.option_flags[i] == 1:
                         sumOfOtherWeights += self.option_weights[i]
                 else:
-                    for i in range(0, 5):
+                    for i in range(0, 4):
                         if i != 0 and self.option_flags[i] == 1:
                             self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
                             self.option_sliders[i].set(self.option_weights[i])
@@ -333,7 +334,7 @@ class UI_class:
             self.option_weights[1] = self.option_sliders[1].get()
             remainder = 1.0 - self.option_weights[1]
             if remainder == 0:
-                    for i in range(0, 5):
+                    for i in range(0, 4):
                         if i != 1 and self.option_flags[i] == 1:
                             self.count = self.count - 1
                             self.option_flags[i] = 0
@@ -342,10 +343,10 @@ class UI_class:
                             self.checkButtons[i].deselect()
             else:
                 sumOfOtherWeights = 0
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 1 and self.option_flags[i] == 1:
                         sumOfOtherWeights += self.option_weights[i]
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 1 and self.option_flags[i] == 1:
                         self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
                         self.option_sliders[i].set(self.option_weights[i])
@@ -355,7 +356,7 @@ class UI_class:
             self.option_weights[2] = self.option_sliders[2].get()
             remainder = 1.0 - self.option_weights[2]
             if remainder == 0:
-                    for i in range(0, 5):
+                    for i in range(0, 4):
                         if i != 2 and self.option_flags[i] == 1:
                             self.count = self.count - 1
                             self.option_flags[i] = 0
@@ -364,15 +365,15 @@ class UI_class:
                             self.checkButtons[i].deselect()
             else:
                 sumOfOtherWeights = 0
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 2 and self.option_flags[i] == 1:
                         sumOfOtherWeights += self.option_weights[i]
-                for i in range(0, 5):
+                for i in range(0, 4):
                     if i != 2 and self.option_flags[i] == 1:
                         self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
                         self.option_sliders[i].set(self.option_weights[i])
 
-    def dl_adjust_others(self, event):
+    '''def dl_adjust_others(self, event):
         if self.count > 1:
             self.option_weights[3] = self.option_sliders[3].get()
             remainder = 1.0 - self.option_weights[3]
@@ -392,15 +393,15 @@ class UI_class:
                 for i in range(0, 5):
                     if i != 3 and self.option_flags[i] == 1:
                         self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
-                        self.option_sliders[i].set(self.option_weights[i])
+                        self.option_sliders[i].set(self.option_weights[i])'''
                     
     def tf_adjust_others(self, event):
         if self.count > 1:
             self.option_weights[4] = self.option_sliders[4].get()
             remainder = 1.0 - self.option_weights[4]
             if remainder == 0:
-                    for i in range(0, 5):
-                        if i != 4 and self.option_flags[i] == 1:
+                    for i in range(0, 4):
+                        if i != 3 and self.option_flags[i] == 1:
                             self.count = self.count - 1
                             self.option_flags[i] = 0
                             self.option_sliders[i].set(0.0)
@@ -408,11 +409,11 @@ class UI_class:
                             self.checkButtons[i].deselect()
             else:
                 sumOfOtherWeights = 0
-                for i in range(0, 5):
-                    if i != 4 and self.option_flags[i] == 1:
+                for i in range(0, 4):
+                    if i != 3 and self.option_flags[i] == 1:
                         sumOfOtherWeights += self.option_weights[i]
-                for i in range(0, 5):
-                    if i != 4 and self.option_flags[i] == 1:
+                for i in range(0, 4):
+                    if i != 3 and self.option_flags[i] == 1:
                         self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
                         self.option_sliders[i].set(self.option_weights[i])
 
@@ -534,8 +535,8 @@ class UI_class:
         options['ch'] = self.option_sliders[0].get()
         options['vk'] = self.option_sliders[1].get()
         options['vc'] = self.option_sliders[2].get()
-        options['dl'] = self.option_sliders[3].get()
-        options['tf'] = self.option_sliders[4].get()
+        # options['dl'] = self.option_sliders[3].get()
+        options['tf'] = self.option_sliders[3].get()
         return options
 
     def show_results_imgs(self):

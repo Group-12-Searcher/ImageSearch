@@ -21,7 +21,7 @@ class Searcher:
                 self.WEIGHT_SEM = 0.4 * flags["vc"]
                 self.WEIGHT_SIFT = 0.03 * flags["vk"]
                 self.WEIGHT_TEXT = 0.1 * flags["tf"]
-                self.WEIGHT_DL = 0.4 * flags["dl"]
+                # self.WEIGHT_DL = 0.4 * flags["dl"]
                 self.searchTerm = searchTerm
 
                 self.results = {}
@@ -148,7 +148,7 @@ class Searcher:
                                 if self.results.get(req_img_name) is None:
                                         self.results[req_img_name] = d * self.WEIGHT_SIFT
                                 else:
-                                        self.results[req_img_name] -= d * self.WEIGHT_SIFT
+                                        self.results[req_img_name] += d * self.WEIGHT_SIFT
                         os.chdir("..")
 
                 if self.WEIGHT_TEXT != 0 or self.searchTerm != "":
@@ -205,7 +205,7 @@ class Searcher:
                                 # close the reader
                                 f.close()
 
-                if self.WEIGHT_DL != 0:
+                '''if self.WEIGHT_DL != 0:
                         # open the deep-learning index file for reading
                         with open(self.deeplearningPath) as f:
                                 print("Doing deep-learning matching...")
@@ -245,7 +245,7 @@ class Searcher:
                                                 score = score*100 * self.WEIGHT_DL
                                         self.results[imgPath] -= score
                                         #print(img, score)
-                        f.close()
+                        f.close()'''
                 
                 # print(len(self.results))
 
