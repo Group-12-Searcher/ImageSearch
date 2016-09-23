@@ -315,10 +315,12 @@ class UI_class:
         # user wants to enter a query; flush old (query + results)
         self.isUploadingImage = True
         self.query_img_frame.destroy()
-        self.result_img_frame.pack_forget()
+        self.result_img_frame.destroy()
         # add new frame for showing new query image
         self.query_img_frame = Frame(self.master)
         self.query_img_frame.pack()
+        self.result_img_frame = Frame(self.master)
+        self.result_img_frame.pack()
         from tkFileDialog import askopenfilename
         imageFile = tkFileDialog.askopenfile(title='Choose an Image File')
         self.filename = imageFile.name
@@ -444,24 +446,28 @@ class UI_class:
             self.result_img_frame.pack()
 
             flags = self.get_options()
+            # print(flags)
 
             # perform the search
             searcher = Searcher("index.csv", "index_semantics.csv", "index_text.csv", "index_deeplearning.csv", flags, self.tf_input.get())
             results = searcher.search(self.queryfeatures, self.querysemantics, self.querytext, self.querycategory)
 
-            # show result pictures
-            COLUMNS = 8
-            image_count = 0
-            for (score, resultID) in results:
-                # load the result image and display it
-                image_count += 1
-                r, c = divmod(image_count - 1, COLUMNS)
-                im = Image.open(resultID)
-                resized = im.resize((100, 100), Image.ANTIALIAS)
-                tkimage = ImageTk.PhotoImage(resized)
-                myvar = Label(self.result_img_frame, image=tkimage)
-                myvar.image = tkimage
-                myvar.grid(row=r, column=c)
+            if (len(results) == 0):
+                pass
+            else:
+                # show result pictures
+                COLUMNS = 8
+                image_count = 0
+                for (score, resultID) in results:
+                    # load the result image and display it
+                    image_count += 1
+                    r, c = divmod(image_count - 1, COLUMNS)
+                    im = Image.open(resultID)
+                    resized = im.resize((100, 100), Image.ANTIALIAS)
+                    tkimage = ImageTk.PhotoImage(resized)
+                    myvar = Label(self.result_img_frame, image=tkimage)
+                    myvar.image = tkimage
+                    myvar.grid(row=r, column=c)
 
             if (self.toLogResults):
                 numRelevant = logResults.get_precision(self.queryImageCategory, results)
