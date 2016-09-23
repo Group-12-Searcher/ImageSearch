@@ -25,7 +25,7 @@ class UI_class:
         self.isUploadingImage = False
 
         self.filename = None
-        self.currFilename = ""
+        self.currFilename = None
         self.searchCount = 0
         self.isSameFile = False
 
@@ -36,30 +36,50 @@ class UI_class:
 
         self.toLogResults = False
         self.queryImageCategory = ''
-
         #Buttons        
-        self.bbutton= Button(self.topframe, text=" Choose an image ", command=self.browse_query_img)
-        self.bbutton.grid(row=1, column=1)
-        self.cbutton = Button(self.topframe, text=" Search ", command=self.show_results_imgs)
-        self.cbutton.grid(row=1, column=2)
-        self.tf_label = Label(self.topframe, text="Enter search term: ")
-        self.tf_label.grid(row=2, column=1)
+        self.bbutton= Button(self.topframe, text="    Choose an image    ", command=self.browse_query_img)
+        self.bbutton.grid(row=1, column=1, columnspan=3)
+        self.cbutton = Button(self.topframe, text="          Search         ", command=self.show_results_imgs)
+        self.cbutton.grid(row=1, column=4, columnspan=1)
+        self.dbutton = Button(self.topframe, text=" X ", command=self.clear_window)
+        self.dbutton.grid(row=1, column=6, columnspan=1)
+        self.tf_label = Label(self.topframe, text="     Enter search term:  ")
+        self.tf_label.grid(row=2, column=1, columnspan=2)
         self.tf_input = Entry(self.topframe)
-        self.tf_input.grid(row=2, column=2, columnspan=2)
+        self.tf_input.grid(row=2, column=3, columnspan=6)
+        rightspace = Label(self.topframe).grid(row=2, column=7, columnspan=1)
 
         self.result_img_frame = Frame(self.master)
         self.result_img_frame.pack()
         self.query_img_frame = Frame(self.master)
         self.query_img_frame.pack()
 
-        downspace = Label(self.topframe).grid(row=7, columnspan=1)
+        downspace = Label(self.topframe).grid(row=7, columnspan=4)
 
         self.topframe.pack()
+
+        self.option_flags = [0,0,0,0,0]
+        self.option_weights = [0.0,0.0,0.0,0.0,0.0]
+        self.count = 0
 
         self.load_options()
         self.reload_options()
     
         self.master.mainloop()
+
+    def clear_window(self):
+        self.option_flags = [0,0,0,0,0]
+        self.option_weights = [0.0,0.0,0.0,0.0,0.0]
+        self.count = 0
+        self.reload_options()
+        self.load_options()
+        self.reload_options()
+        self.query_img_frame.destroy()
+        self.result_img_frame.destroy()
+        self.tf_input.config(state=NORMAL)
+        self.tf_input.delete(0, 'end')
+        self.filename = None
+        self.currFilename = None
 
     def reload_options(self):
         self.checkButton1.pack_forget()
@@ -82,14 +102,11 @@ class UI_class:
         self.deepLearning = IntVar()
         self.textFeature = IntVar()
         self.option_vars = [self.colorHist, self.visualKeyword, self.visualConcept, self.deepLearning, self.textFeature]
-        self.option_flags = [0,0,0,0,0]
-        self.option_weights = [0,0,0,0,0]
         self.option_boxes = []
         self.option_sliders = []
-        self.count = 0
 
         # Color Histogram inputs
-        self.ch = Label(self.topframe).grid(row=1, columnspan=2)
+        self.ch = Label(self.topframe).grid(row=1)
         self.checkButton1 = Checkbutton(self.master, text="Color Histogram", variable=self.colorHist)
         self.checkButton1.deselect()
         self.option_boxes.append(self.checkButton1)
@@ -103,7 +120,7 @@ class UI_class:
         self.ch_scale.pack()
 
         # Visual Keywords inputs
-        self.vk = Label(self.topframe).grid(row=1, columnspan=2)
+        self.vk = Label(self.topframe).grid(row=1)
         self.checkButton2 = Checkbutton(self.master, text="Visual Keyword", variable=self.visualKeyword)
         self.checkButton2.deselect()
         self.option_boxes.append(self.checkButton2)
@@ -117,7 +134,7 @@ class UI_class:
         self.vk_scale.pack()
 
         # Visual Concepts inputs
-        self.vc = Label(self.topframe).grid(row=1, columnspan=2)
+        self.vc = Label(self.topframe).grid(row=1)
         self.checkButton3 = Checkbutton(self.master, text="Visual Concept", variable=self.visualConcept)
         self.checkButton3.deselect()
         self.option_boxes.append(self.checkButton3)
@@ -131,7 +148,7 @@ class UI_class:
         self.vc_scale.pack()
 
         # Deep Learning inputs
-        self.dl = Label(self.topframe).grid(row=1, columnspan=2)
+        self.dl = Label(self.topframe).grid(row=1)
         self.checkButton4 = Checkbutton(self.master, text="Deep Learning", variable=self.deepLearning)
         self.checkButton4.deselect()
         self.option_boxes.append(self.checkButton4)
@@ -145,7 +162,7 @@ class UI_class:
         self.dl_scale.pack()
 
         # Text Features inputs
-        self.tf = Label(self.topframe).grid(row=1, columnspan=2)
+        self.tf = Label(self.topframe).grid(row=1)
         self.checkButton5 = Checkbutton(self.master, text="Text Feature", variable=self.textFeature)
         self.checkButton5.deselect()
         self.option_boxes.append(self.checkButton5)
@@ -158,6 +175,16 @@ class UI_class:
         self.option_sliders.append(self.tf_scale)
         self.tf_scale.pack()
 
+        self.checkButtons = [self.checkButton1, self.checkButton2, self.checkButton3, self.checkButton4, self.checkButton5]
+        for i in range(0, 5):
+            if self.count > 1:
+                if self.option_flags[i] == 1:
+                    self.checkButtons[i].select()
+                    self.option_sliders[i].config(state=NORMAL)
+                    self.option_sliders[i].set(self.option_weights[i])
+                else:
+                    self.checkButtons[i].deselect()
+
     def toggle_ch_slider(self, event):
         if self.option_vars[0].get() == 0:
             self.count = self.count + 1
@@ -166,6 +193,7 @@ class UI_class:
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
+                    self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
             self.option_flags[0] = 0
@@ -175,6 +203,7 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
+                        self.option_weights[i] = self.option_sliders[i].get()
 
     def toggle_vk_slider(self, event):
         if self.option_vars[1].get() == 0:
@@ -184,6 +213,7 @@ class UI_class:
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
+                    self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
             self.option_flags[1] = 0
@@ -193,6 +223,7 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
+                        self.option_weights[i] = self.option_sliders[i].get()
 
     def toggle_vc_slider(self, event):
         if self.option_vars[2].get() == 0:
@@ -202,6 +233,7 @@ class UI_class:
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
+                    self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
             self.option_flags[2] = 0
@@ -211,6 +243,7 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
+                        self.option_weights[i] = self.option_sliders[i].get()
 
     def toggle_dl_slider(self, event):
         if self.option_vars[3].get() == 0:
@@ -220,6 +253,7 @@ class UI_class:
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
+                    self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
             self.option_flags[3] = 0
@@ -229,6 +263,7 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
+                        self.option_weights[i] = self.option_sliders[i].get()
 
     def toggle_tf_slider(self, event):
         if self.option_vars[4].get() == 0:
@@ -238,6 +273,7 @@ class UI_class:
             for i in range(0, 5):
                 if self.option_flags[i] == 1:
                     self.option_sliders[i].set(1.0 / self.count)
+                    self.option_weights[i] = self.option_sliders[i].get()
         else:
             self.count = self.count - 1
             self.option_flags[4] = 0
@@ -247,6 +283,7 @@ class UI_class:
                 for i in range(0, 5):
                     if self.option_flags[i] == 1:
                         self.option_sliders[i].set(1.0 / self.count)
+                        self.option_weights[i] = self.option_sliders[i].get()
 
     def register_ch_original_value(self, event):
         self.option_weights[0] = self.option_sliders[0].get()
@@ -270,45 +307,114 @@ class UI_class:
 
     def ch_adjust_others(self, value):
         if self.count > 1:
-            difference = (self.option_weights[0] - self.option_sliders[0].get()) / (self.count - 1)
             self.option_weights[0] = self.option_sliders[0].get()
-            for i in range(0, 5):
-                if i != 0 and self.option_flags[i] == 1:
-                    self.option_weights[i] = self.option_weights[i] + difference
-                    self.option_sliders[i].set(self.option_weights[i])
+            remainder = 1.0 - self.option_weights[0]
+            if remainder == 0:
+                for i in range(0, 5):
+                    if i != 0 and self.option_flags[i] == 1:
+                        self.count = self.count - 1
+                        self.option_flags[i] = 0
+                        self.option_sliders[i].set(0.0)
+                        self.option_sliders[i].config(state=DISABLED)
+                        self.checkButtons[i].deselect()
+            else:
+                sumOfOtherWeights = 0
+                for i in range(0, 5):
+                    if i != 0 and self.option_flags[i] == 1:
+                        sumOfOtherWeights += self.option_weights[i]
+                else:
+                    for i in range(0, 5):
+                        if i != 0 and self.option_flags[i] == 1:
+                            self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
+                            self.option_sliders[i].set(self.option_weights[i])
 
     def vk_adjust_others(self, event):
         if self.count > 1:
-            difference = (self.option_weights[1] - self.option_sliders[1].get()) / (self.count - 1)
             self.option_weights[1] = self.option_sliders[1].get()
-            for i in range(0, 5):
-                if i != 1 and self.option_flags[i] == 1:
-                    self.option_weights[i] = self.option_weights[i] + difference
-                    self.option_sliders[i].set(self.option_weights[i])
+            remainder = 1.0 - self.option_weights[1]
+            if remainder == 0:
+                    for i in range(0, 5):
+                        if i != 1 and self.option_flags[i] == 1:
+                            self.count = self.count - 1
+                            self.option_flags[i] = 0
+                            self.option_sliders[i].set(0.0)
+                            self.option_sliders[i].config(state=DISABLED)
+                            self.checkButtons[i].deselect()
+            else:
+                sumOfOtherWeights = 0
+                for i in range(0, 5):
+                    if i != 1 and self.option_flags[i] == 1:
+                        sumOfOtherWeights += self.option_weights[i]
+                for i in range(0, 5):
+                    if i != 1 and self.option_flags[i] == 1:
+                        self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
+                        self.option_sliders[i].set(self.option_weights[i])
 
     def vc_adjust_others(self, event):
         if self.count > 1:
-            difference = (self.option_weights[2] - self.option_sliders[2].get()) / (self.count - 1)
             self.option_weights[2] = self.option_sliders[2].get()
-            for i in range(0, 5):
-                if i != 2 and self.option_flags[i] == 1:
-                    self.option_sliders[i].set(self.option_sliders[i].get() + difference)
+            remainder = 1.0 - self.option_weights[2]
+            if remainder == 0:
+                    for i in range(0, 5):
+                        if i != 2 and self.option_flags[i] == 1:
+                            self.count = self.count - 1
+                            self.option_flags[i] = 0
+                            self.option_sliders[i].set(0.0)
+                            self.option_sliders[i].config(state=DISABLED)
+                            self.checkButtons[i].deselect()
+            else:
+                sumOfOtherWeights = 0
+                for i in range(0, 5):
+                    if i != 2 and self.option_flags[i] == 1:
+                        sumOfOtherWeights += self.option_weights[i]
+                for i in range(0, 5):
+                    if i != 2 and self.option_flags[i] == 1:
+                        self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
+                        self.option_sliders[i].set(self.option_weights[i])
 
     def dl_adjust_others(self, event):
         if self.count > 1:
-            difference = (self.option_weights[3] - self.option_sliders[3].get()) / (self.count - 1)
             self.option_weights[3] = self.option_sliders[3].get()
-            for i in range(0, 5):
-                if i != 3 and self.option_flags[i] == 1:
-                    self.option_sliders[i].set(self.option_sliders[i].get() + difference)
-
+            remainder = 1.0 - self.option_weights[3]
+            if remainder == 0:
+                    for i in range(0, 5):
+                        if i != 3 and self.option_flags[i] == 1:
+                            self.count = self.count - 1
+                            self.option_flags[i] = 0
+                            self.option_sliders[i].set(0.0)
+                            self.option_sliders[i].config(state=DISABLED)
+                            self.checkButtons[i].deselect()
+            else:
+                sumOfOtherWeights = 0
+                for i in range(0, 5):
+                    if i != 3 and self.option_flags[i] == 1:
+                        sumOfOtherWeights += self.option_weights[i]
+                for i in range(0, 5):
+                    if i != 3 and self.option_flags[i] == 1:
+                        self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
+                        self.option_sliders[i].set(self.option_weights[i])
+                    
     def tf_adjust_others(self, event):
         if self.count > 1:
-            difference = (self.option_weights[4] - self.option_sliders[4].get()) / (self.count - 1)
             self.option_weights[4] = self.option_sliders[4].get()
-            for i in range(0, 5):
-                if i != 4 and self.option_flags[i] == 1:
-                    self.option_sliders[i].set(self.option_sliders[i].get() + difference)
+            remainder = 1.0 - self.option_weights[4]
+            if remainder == 0:
+                    for i in range(0, 5):
+                        if i != 4 and self.option_flags[i] == 1:
+                            self.count = self.count - 1
+                            self.option_flags[i] = 0
+                            self.option_sliders[i].set(0.0)
+                            self.option_sliders[i].config(state=DISABLED)
+                            self.checkButtons[i].deselect()
+            else:
+                sumOfOtherWeights = 0
+                for i in range(0, 5):
+                    if i != 4 and self.option_flags[i] == 1:
+                        sumOfOtherWeights += self.option_weights[i]
+                for i in range(0, 5):
+                    if i != 4 and self.option_flags[i] == 1:
+                        self.option_weights[i] = self.option_weights[i]/sumOfOtherWeights*remainder
+                        self.option_sliders[i].set(self.option_weights[i])
 
     def browse_query_img(self):
         self.tf_input.delete(0, END)
@@ -323,6 +429,9 @@ class UI_class:
         self.result_img_frame.pack()
         from tkFileDialog import askopenfilename
         imageFile = tkFileDialog.askopenfile(title='Choose an Image File')
+        while imageFile is None:
+            tkMessageBox.showwarning("Alert", "Please select an image.")
+            imageFile = tkFileDialog.askopenfile(title='Choose an Image File')
         self.filename = imageFile.name
         self.preprocess_image()
 
@@ -350,16 +459,15 @@ class UI_class:
                 print(self.currFilename)
                 if (self.filename == self.currFilename):
                     self.isSameFile = True
-
+                #self.currFilename = self.filename
+                
         self.reload_options()
         self.load_options()
-
         if (self.count == 0):
             self.tf_input.config(state=NORMAL)
         else:
             self.tf_input.delete(0, len(self.tf_input.get()))
             self.tf_input.config(state=DISABLED)
-        
         self.query_img_frame.mainloop()
 
     def preprocess_image(self):
@@ -431,7 +539,7 @@ class UI_class:
         return options
 
     def show_results_imgs(self):
-        if (self.count == 0 and self.tf_input.get() == ""):
+        if (self.count == 0 and self.tf_input.get() == "" ):
             tkMessageBox.showwarning("Alert", "Please enter a search term, or upload image.")
 
         else:
@@ -442,7 +550,10 @@ class UI_class:
             
             # user now wants to commence the search; load frame for displaying results of query
             self.isUploadingImage = False;
-            # self.result_img_frame = Frame(self.master)
+
+            # flush out old results
+            self.result_img_frame.destroy()
+            self.result_img_frame = Frame(self.master)
             self.result_img_frame.pack()
 
             flags = self.get_options()
