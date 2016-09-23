@@ -10,6 +10,7 @@ import tkFileDialog
 import tkMessageBox
 from PIL import Image, ImageTk
 import os
+import os.path
 import subprocess
 import csv
 import logResults
@@ -389,13 +390,16 @@ class UI_class:
         # generate the txt file with 1000D for query
         FNULL = open(os.devnull, 'w') #suppress output to stdout
         os.chdir("semanticFeature")
-        args = "./image_classification.exe temp.txt"
-        #subprocess.call(args, stdout=FNULL, stderr=FNULL)
-        subprocess.call(args)
-        os.chdir("../")
-        # read 1000D vector for semantics
+        # Check if txt file with 1000D already exists.
         reqfile = self.filename
         base, ext = os.path.splitext(reqfile)
+        req_text_file = base + ".txt"
+        if (not os.path.isfile(req_text_file)):
+            args = "./image_classification.exe temp.txt"
+            #subprocess.call(args, stdout=FNULL, stderr=FNULL)
+            subprocess.call(args)
+        os.chdir("../")
+        # read 1000D vector for semantics
         self.querysemantics = sr.read(base + ".txt")
 
         # convert query image to grayscale
