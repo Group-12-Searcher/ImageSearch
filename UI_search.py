@@ -177,7 +177,7 @@ class UI_class:
 
         self.checkButtons = [self.checkButton1, self.checkButton2, self.checkButton3, self.checkButton4, self.checkButton5]
         for i in range(0, 5):
-            if self.count > 1:
+            if self.count > 0:
                 if self.option_flags[i] == 1:
                     self.checkButtons[i].select()
                     self.option_sliders[i].config(state=NORMAL)
