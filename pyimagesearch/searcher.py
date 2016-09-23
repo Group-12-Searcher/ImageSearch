@@ -254,7 +254,7 @@ class Searcher:
 		self.results = sorted([(v, k) for (k, v) in self.results.items()])
 		
 		# return our (limited) self.results
-		topImages = []
+		'''topImages = []
 		for r in self.results[:limit]:
                         topImages.append(r[1].split('\\')[-1])
                         
@@ -270,7 +270,7 @@ class Searcher:
                 for cats in topImagesCats:
                         print("{}. {}: {}".format(i, topImages[i-1], cats))
                         i += 1
-                print("")
+                print("")'''
 		return self.results[:limit]
 
 	def chi2_distance(self, histA, histB, eps = 1e-10):
