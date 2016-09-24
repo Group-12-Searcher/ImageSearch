@@ -17,11 +17,10 @@ class Searcher:
 		self.semanticsPath = semanticsPath
 		self.textPath = textPath
 		self.deeplearningPath = deeplearningPath
-		self.WEIGHT_CH = 0.07 * flags["ch"]
-                self.WEIGHT_SEM = 0.4 * flags["vc"]
-                self.WEIGHT_SIFT = 0.03 * flags["vk"]
-                self.WEIGHT_TEXT = 0.1 * flags["tf"]
-                # self.WEIGHT_DL = 0.4 * flags["dl"]
+		self.WEIGHT_CH = flags["ch"]
+                self.WEIGHT_SEM = flags["vc"]
+                self.WEIGHT_SIFT = flags["vk"]
+                self.WEIGHT_TEXT = flags["tf"]
                 self.searchTerm = searchTerm
 
                 self.results = {}
@@ -254,7 +253,7 @@ class Searcher:
 		self.results = sorted([(v, k) for (k, v) in self.results.items()])
 		
 		# return our (limited) self.results
-		'''topImages = []
+		topImages = []
 		for r in self.results[:limit]:
                         topImages.append(r[1].split('\\')[-1])
                         
@@ -270,7 +269,7 @@ class Searcher:
                 for cats in topImagesCats:
                         print("{}. {}: {}".format(i, topImages[i-1], cats))
                         i += 1
-                print("")'''
+                print("")
 		return self.results[:limit]
 
 	def chi2_distance(self, histA, histB, eps = 1e-10):
