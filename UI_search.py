@@ -34,7 +34,7 @@ class UI_class:
         self.querytext = None
         self.querycategory = None
 
-        self.toLogResults = False
+        self.toLogResults = True
         self.queryImageCategory = ''
         #Buttons        
         self.bbutton= Button(self.topframe, text="    Choose an image    ", command=self.browse_query_img)
@@ -303,8 +303,8 @@ class UI_class:
         #print("DL: %s" % (self.option_weights[3]))'''
 
     def register_tf_original_value(self, event):
-        self.option_weights[4] = self.option_sliders[4].get()
-        #print("TF: %s" % (self.option_weights[4]))
+        self.option_weights[3] = self.option_sliders[3].get()
+        #print("TF: %s" % (self.option_weights[3]))
 
     def ch_adjust_others(self, value):
         if self.count > 1:
@@ -397,8 +397,8 @@ class UI_class:
                     
     def tf_adjust_others(self, event):
         if self.count > 1:
-            self.option_weights[4] = self.option_sliders[4].get()
-            remainder = 1.0 - self.option_weights[4]
+            self.option_weights[3] = self.option_sliders[3].get()
+            remainder = 1.0 - self.option_weights[3]
             if remainder == 0:
                     for i in range(0, 4):
                         if i != 3 and self.option_flags[i] == 1:
